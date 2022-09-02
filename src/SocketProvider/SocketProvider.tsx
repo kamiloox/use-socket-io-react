@@ -11,7 +11,10 @@ import io, { ManagerOptions, SocketOptions, Socket } from 'socket.io-client';
 
 import { ServerToClientEvents } from '../types';
 
-import { useSocketReducer, State as SocketReducerState } from './socketReducer';
+import {
+  useSocketReducer,
+  State as SocketReducerState,
+} from './socketReducer/socketReducer';
 
 type SocketContextValues = {
   readonly socket: Socket;
@@ -70,7 +73,7 @@ export const SocketProvider = ({
   );
 };
 
-export const useSocketContext = () => {
+export const useSocket = () => {
   const value = useContext(SocketContext);
 
   if (!value) {

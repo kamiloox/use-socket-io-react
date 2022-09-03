@@ -1,8 +1,8 @@
 {
-  "name": "use-socket-io",
+  "name": "use-socket-io-react",
   "version": "0.0.1",
   "description": "React.js wrapper for socket.io-client",
-  "repository": "https://github.com/kamiloox/use-socket-io",
+  "repository": "https://github.com/kamiloox/use-socket-io-react",
   "author": "kamiloox",
   "license": "MIT",
   "main": "dist/index.js",
@@ -21,8 +21,8 @@
     "test:watch": "jest --watch"
   },
   "peerDependencies": {
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react": ">=17.0.2",
+    "react-dom": ">=17.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",

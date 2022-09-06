@@ -37,11 +37,11 @@ export const SocketProvider = ({
     Socket<ServerToClientEvents, Record<string, unknown>>
   > = useRef(io(uri, config));
 
-  const socket = useMemo(() => socketRef.current, []);
-
   const [state, dispatch] = useSocketReducer();
 
   useEffect(() => {
+    const socket = socketRef.current;
+
     dispatch({ type: 'connecting' });
 
     socket.on('connect', () => {
@@ -64,10 +64,10 @@ export const SocketProvider = ({
       socket.off('connect_error');
       socket.off('disconnect');
     };
-  }, [dispatch, socket]);
+  }, [dispatch, uri]);
 
   return (
-    <SocketContext.Provider value={{ socket, ...state }}>
+    <SocketContext.Provider value={{ socket: socketRef.current, ...state }}>
       {children}
     </SocketContext.Provider>
   );

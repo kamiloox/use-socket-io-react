@@ -1,11 +1,10 @@
 import {
   createContext,
-  MutableRefObject,
   ReactNode,
   useContext,
   useEffect,
   useMemo,
-  useRef,
+  useState,
 } from 'react';
 import io, { ManagerOptions, SocketOptions, Socket } from 'socket.io-client';
 
@@ -13,12 +12,12 @@ import { ServerToClientEvents } from '../types';
 
 import {
   useSocketReducer,
-  State as SocketReducerState,
+  State as SocketState,
 } from './socketReducer/socketReducer';
 
 type SocketContextValues = {
   readonly socket: Socket;
-} & SocketReducerState;
+} & SocketState;
 
 const SocketContext = createContext<SocketContextValues | null>(null);
 
@@ -33,11 +32,10 @@ export const SocketProvider = ({
   uri,
   config,
 }: SocketProviderProps) => {
-  const socketRef: MutableRefObject<
-    Socket<ServerToClientEvents, Record<string, unknown>>
-  > = useRef(io(uri, config));
-
-  const socket = useMemo(() => socketRef.current, []);
+  const [socket]: readonly [
+    Socket<ServerToClientEvents, Record<string, unknown>>,
+    unknown,
+  ] = useState(io(uri, config));
 
   const [state, dispatch] = useSocketReducer();
 
@@ -64,7 +62,7 @@ export const SocketProvider = ({
       socket.off('connect_error');
       socket.off('disconnect');
     };
-  }, [dispatch, socket]);
+  }, [dispatch, uri]);
 
   return (
     <SocketContext.Provider value={{ socket, ...state }}>

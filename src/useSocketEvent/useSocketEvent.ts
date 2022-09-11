@@ -7,37 +7,35 @@ type EventNameString = string & { readonly __brand?: never };
 
 type EventName = keyof ServerToClientEvents | EventNameString;
 
-type EventResolvedData<
+type UseSocketEventResult<
   Event extends EventName,
   Data,
 > = Event extends keyof ServerToClientEvents
   ? ServerToClientEvents[Event] extends (...args: readonly any[]) => void
     ? Parameters<ServerToClientEvents[Event]>[0]
-    : Data
-  : Data;
+    : { readonly data: Data | null }
+  : { readonly data: Data | null };
 
 type UseSocketEvent = {
-  <Data, Event extends EventName>(event: Event): EventResolvedData<
+  <Data, Event extends EventName>(event: Event): UseSocketEventResult<
     Event,
     Data
-  > | null;
-  <Data, Event extends EventNameString = EventNameString>(
-    event: Event,
-  ): Data | null;
+  >;
+  <Data, Event extends EventNameString = EventNameString>(event: Event): {
+    readonly data: Data | null;
+  };
 };
 
 export const useSocketEvent: UseSocketEvent = <Data, Event extends EventName>(
   event: Event,
 ) => {
   const { socket, isConnected } = useSocket();
-  const [data, setData] = useState<EventResolvedData<Event, Data> | null>(null);
+  const [data, setData] = useState<UseSocketEventResult<Event, Data> | null>(
+    null,
+  );
 
   useEffect(() => {
-    if (!isConnected) {
-      return;
-    }
-
-    socket.on(event as string, (value: EventResolvedData<Event, Data>) => {
+    socket.on(event as string, (value: UseSocketEventResult<Event, Data>) => {
       setData(value);
     });
 
@@ -46,5 +44,5 @@ export const useSocketEvent: UseSocketEvent = <Data, Event extends EventName>(
     };
   }, [isConnected]);
 
-  return data;
+  return { data };
 };

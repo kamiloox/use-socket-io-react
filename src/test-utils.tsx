@@ -64,3 +64,9 @@ export const waitForSocketConnection = async () => {
 
   throw new Error('Client socket cannot connect to the server');
 };
+
+/** Delays test. It process to next function after provided time in`ms` that has elapsed. */
+// eslint-disable-next-line require-await
+export const postpone = async (ms: number) => {
+  return new Promise((_) => setTimeout(_, ms));
+};

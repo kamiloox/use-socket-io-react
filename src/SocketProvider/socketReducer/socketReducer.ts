@@ -1,27 +1,6 @@
 import { useReducer, Reducer } from 'react';
 
-export type State = {
-  readonly isConnected: boolean;
-  readonly isConnectionError: boolean;
-  readonly isConnecting: boolean;
-  readonly error: string | null;
-  readonly status: 'connected' | 'connecting' | 'connect_error' | 'disconnect';
-};
-
-type Action =
-  | {
-      readonly type: 'connected';
-    }
-  | {
-      readonly type: 'connecting';
-    }
-  | {
-      readonly type: 'connect_error';
-      readonly payload: string;
-    }
-  | {
-      readonly type: 'disconnect';
-    };
+import { State, Action } from './types';
 
 const socketReducer = (state: State, action: Action): State => {
   if (state.status === action.type) {
@@ -30,9 +9,11 @@ const socketReducer = (state: State, action: Action): State => {
 
   if (action.type === 'connecting') {
     return {
-      error: null,
-      isConnectionError: false,
+      disconnectReason: undefined,
+      error: undefined,
+      isError: false,
       isConnected: false,
+      isDisconnected: false,
       isConnecting: true,
       status: 'connecting',
     };
@@ -40,31 +21,37 @@ const socketReducer = (state: State, action: Action): State => {
 
   if (action.type === 'connected') {
     return {
-      error: null,
-      isConnectionError: false,
+      disconnectReason: undefined,
+      error: undefined,
+      isError: false,
       isConnected: true,
       isConnecting: false,
+      isDisconnected: false,
       status: 'connected',
     };
   }
 
-  if (action.type === 'connect_error') {
+  if (action.type === 'error') {
     return {
+      disconnectReason: undefined,
+      isDisconnected: false,
+      isError: true,
       error: action.payload,
-      isConnectionError: true,
       isConnected: false,
       isConnecting: false,
-      status: 'connect_error',
+      status: 'error',
     };
   }
 
   if (action.type === 'disconnect') {
     return {
-      error: null,
-      isConnectionError: false,
+      error: undefined,
+      isError: false,
       isConnected: false,
       isConnecting: false,
-      status: 'disconnect',
+      isDisconnected: true,
+      status: 'disconnected',
+      disconnectReason: action.payload,
     };
   }
 
@@ -73,12 +60,16 @@ const socketReducer = (state: State, action: Action): State => {
 
 export const useSocketReducer = () => {
   const initialState: State = {
-    error: null,
     isConnected: false,
-    isConnectionError: false,
+    isError: false,
     isConnecting: true,
+    isDisconnected: false,
     status: 'connecting',
+    disconnectReason: undefined,
+    error: undefined,
   };
 
   return useReducer<Reducer<State, Action>>(socketReducer, initialState);
 };
+
+export { State };

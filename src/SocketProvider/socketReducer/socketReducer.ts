@@ -5,12 +5,12 @@ export type State = {
   readonly isConnectionError: boolean;
   readonly isConnecting: boolean;
   readonly error: string | null;
-  readonly status: 'connect' | 'connecting' | 'connect_error' | 'disconnect';
+  readonly status: 'connected' | 'connecting' | 'connect_error' | 'disconnect';
 };
 
 type Action =
   | {
-      readonly type: 'connect';
+      readonly type: 'connected';
     }
   | {
       readonly type: 'connecting';
@@ -38,13 +38,13 @@ const socketReducer = (state: State, action: Action): State => {
     };
   }
 
-  if (action.type === 'connect') {
+  if (action.type === 'connected') {
     return {
       error: null,
       isConnectionError: false,
       isConnected: true,
       isConnecting: false,
-      status: 'connect',
+      status: 'connected',
     };
   }
 

@@ -43,7 +43,7 @@ export const SocketProvider = ({
     dispatch({ type: 'connecting' });
 
     socket.on('connect', () => {
-      dispatch({ type: 'connect' });
+      dispatch({ type: 'connected' });
     });
 
     socket.on('connect_error', () => {

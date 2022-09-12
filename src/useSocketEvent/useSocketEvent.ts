@@ -12,7 +12,7 @@ type UseSocketEventResult<
   Data,
 > = Event extends keyof ServerToClientEvents
   ? ServerToClientEvents[Event] extends (...args: readonly any[]) => void
-    ? Parameters<ServerToClientEvents[Event]>[0]
+    ? { readonly data: Parameters<ServerToClientEvents[Event]>[0] | null }
     : { readonly data: Data | null }
   : { readonly data: Data | null };
 

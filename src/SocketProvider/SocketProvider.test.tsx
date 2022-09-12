@@ -14,7 +14,7 @@ test('when uri is invalid it returns connection error', async () => {
 
   await waitForNextUpdate();
 
-  expect(result.current.isConnectionError).toBeTruthy();
+  expect(result.current.isError).toBeTruthy();
 });
 
 test('when everything is valid it returns connected state', async () => {

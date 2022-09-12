@@ -19,7 +19,7 @@ type SocketContextValues = {
   readonly socket: Socket;
 } & SocketState;
 
-const SocketContext = createContext<SocketContextValues | null>(null);
+const SocketContext = createContext<SocketContextValues | undefined>(undefined);
 
 type SocketProviderProps = {
   readonly children: ReactNode;
@@ -46,15 +46,15 @@ export const SocketProvider = ({
       dispatch({ type: 'connected' });
     });
 
-    socket.on('connect_error', () => {
+    socket.on('connect_error', ({ message }) => {
       dispatch({
-        type: 'connect_error',
-        payload: 'Websocket connection failure',
+        type: 'error',
+        payload: message,
       });
     });
 
-    socket.on('disconnect', () => {
-      dispatch({ type: 'disconnect' });
+    socket.on('disconnect', (reason) => {
+      dispatch({ type: 'disconnect', payload: reason });
     });
 
     return () => {

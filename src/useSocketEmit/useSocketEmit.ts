@@ -1,12 +1,8 @@
 import { useCallback } from 'react';
+import { Socket } from 'socket.io-client';
 
 import { useSocket } from '../SocketProvider/SocketProvider';
-import {
-  ClientToServerEvents,
-  EventNameString,
-  EventsOf,
-  Socket,
-} from '../types';
+import { ClientToServerEvents, EventNameString, EventsOf } from '../types';
 
 type EventName = EventsOf<ClientToServerEvents>;
 
@@ -42,7 +38,7 @@ export const useSocketEmit: UseSocketEmit = () => {
       event: Event,
       ...args: SocketEmitArguments<Event>
     ) => {
-      socket.emit(event, ...(args as Parameters<ClientToServerEvents[Event]>));
+      socket.emit(event, ...args);
     },
     [],
   );

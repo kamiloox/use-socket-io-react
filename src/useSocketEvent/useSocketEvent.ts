@@ -1,20 +1,28 @@
 import { useEffect, useRef, useState } from 'react';
+import { Socket } from 'socket.io-client';
 
 import { useSocket } from '../SocketProvider/SocketProvider';
-import { ServerToClientEvents, MapToUndefined, UnknownArray } from '../types';
+import {
+  ServerToClientEvents,
+  MapToUndefined,
+  UnknownArray,
+  EventsOf,
+  EventNameString,
+} from '../types';
 
-type EventNameString = string & { readonly __brand?: never };
-
-type EventName = keyof ServerToClientEvents | EventNameString;
+type EventName = EventsOf<ServerToClientEvents>;
 
 type UseSocketEventResult<
   Event extends EventName,
   Data extends UnknownArray,
 > = Event extends keyof ServerToClientEvents
   ? ServerToClientEvents[Event] extends (...args: readonly any[]) => void
-    ? { readonly data: MapToUndefined<Parameters<ServerToClientEvents[Event]>> }
-    : { readonly data: MapToUndefined<Data> }
-  : { readonly data: MapToUndefined<Data> };
+    ? {
+        readonly data: MapToUndefined<Parameters<ServerToClientEvents[Event]>>;
+        readonly socket: Socket;
+      }
+    : { readonly data: MapToUndefined<Data>; readonly socket: Socket }
+  : { readonly data: MapToUndefined<Data>; readonly socket: Socket };
 
 type Config = Partial<{
   readonly once: boolean;
@@ -68,5 +76,5 @@ export const useSocketEvent: UseSocketEvent = <
     };
   }, [isConnected]);
 
-  return { data };
+  return { data, socket };
 };

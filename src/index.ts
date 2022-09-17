@@ -1,3 +1,4 @@
 export { SocketProvider, useSocket } from './SocketProvider/SocketProvider';
 export { useSocketEvent } from './useSocketEvent/useSocketEvent';
-export type { ServerToClientEvents } from './types';
+export { useSocketEmit } from './useSocketEmit/useSocketEmit';
+export type { ServerToClientEvents, ClientToServerEvents } from './types';

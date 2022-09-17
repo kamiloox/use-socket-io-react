@@ -1,25 +1,36 @@
 import { createServer } from 'http';
 
-import { renderHook } from '@testing-library/react-hooks';
 import { ReactNode } from 'react';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
+import Client from 'socket.io-client';
 
-import { SocketProvider, useSocket } from './SocketProvider/SocketProvider';
+import { SocketProvider } from './SocketProvider/SocketProvider';
 
 const httpServer = createServer();
-export const serverSocket = new Server(httpServer);
+const io = new Server(httpServer);
+
+export const server = {
+  socket: {} as Socket,
+};
 
 beforeAll((done) => {
-  httpServer.listen();
-  done();
+  httpServer.listen(() => {
+    Client(`http://localhost:${getHttpServerPort() ?? ''}`);
+
+    io.on('connection', (socket) => {
+      server.socket = socket;
+      done();
+    });
+  });
 });
 
 afterAll(() => {
-  serverSocket.close();
+  io.close();
 });
 
 const getHttpServerPort = () => {
   const address = httpServer.address();
+
   if (address && typeof address !== 'string' && 'port' in address) {
     return address.port;
   }
@@ -49,20 +60,6 @@ export const SocketProviderMockInvalidUri = ({
       {children}
     </SocketProvider>
   );
-};
-
-export const waitForSocketConnection = async () => {
-  const { result, waitForValueToChange } = renderHook(useSocket, {
-    wrapper: SocketProviderMock,
-  });
-
-  await waitForValueToChange(() => result.current.isConnected);
-
-  if (result.current.isConnected) {
-    return;
-  }
-
-  throw new Error('Client socket cannot connect to the server');
 };
 
 /** Delays test. It process to next function after provided time in`ms` that has elapsed. */

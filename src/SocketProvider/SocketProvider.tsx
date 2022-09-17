@@ -8,8 +8,6 @@ import {
 } from 'react';
 import io, { ManagerOptions, SocketOptions, Socket } from 'socket.io-client';
 
-import { ServerToClientEvents } from '../types';
-
 import {
   useSocketReducer,
   State as SocketState,
@@ -32,10 +30,7 @@ export const SocketProvider = ({
   uri,
   config,
 }: SocketProviderProps) => {
-  const [socket]: readonly [
-    Socket<ServerToClientEvents, Record<string, unknown>>,
-    unknown,
-  ] = useState(io(uri, config));
+  const [socket]: readonly [Socket, unknown] = useState(io(uri, config));
 
   const [state, dispatch] = useSocketReducer();
 

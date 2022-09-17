@@ -1,5 +1,5 @@
-name: test
-on: [pull-request]
+name: validate-tests
+on: [pull_request]
 jobs:
   validate-tests:
     runs-on: ubuntu-latest
@@ -19,7 +19,7 @@ jobs:
       - name: Run integration tests
         run: yarn jest
       - name: Lint files
-        run: yarn Lint
+        run: yarn lint
       - name: Format files
         run: yarn format
       - name: Builds project

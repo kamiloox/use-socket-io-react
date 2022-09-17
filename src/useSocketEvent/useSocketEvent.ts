@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { Socket } from 'socket.io-client';
 
 import { useSocket } from '../SocketProvider/SocketProvider';
 import {
@@ -8,6 +7,7 @@ import {
   UnknownArray,
   EventsOf,
   EventNameString,
+  Socket,
 } from '../types';
 
 type EventName = EventsOf<ServerToClientEvents>;

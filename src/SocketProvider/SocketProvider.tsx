@@ -6,7 +6,9 @@ import {
   useMemo,
   useState,
 } from 'react';
-import io, { ManagerOptions, SocketOptions, Socket } from 'socket.io-client';
+import io, { ManagerOptions, SocketOptions } from 'socket.io-client';
+
+import { Socket } from '../types';
 
 import {
   useSocketReducer,

@@ -18,7 +18,8 @@
     "lint": "eslint --fix",
     "format": "prettier --write .",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
     "react": ">=17.0.2",

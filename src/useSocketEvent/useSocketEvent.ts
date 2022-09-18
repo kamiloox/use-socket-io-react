@@ -4,39 +4,45 @@ import { Socket } from 'socket.io-client';
 import { useSocket } from '../SocketProvider/SocketProvider';
 import {
   ServerToClientEvents,
-  MapToUndefined,
   UnknownArray,
   EventsOf,
   EventNameString,
+  MapToUndefined,
 } from '../types';
 
 type EventName = EventsOf<ServerToClientEvents>;
 
-type UseSocketEventResult<
+type HandlerValues<
   Event extends EventName,
   Data extends UnknownArray,
 > = Event extends keyof ServerToClientEvents
   ? ServerToClientEvents[Event] extends (...args: readonly any[]) => void
-    ? {
-        readonly data: MapToUndefined<Parameters<ServerToClientEvents[Event]>>;
-        readonly socket: Socket;
-      }
-    : { readonly data: MapToUndefined<Data>; readonly socket: Socket }
-  : { readonly data: MapToUndefined<Data>; readonly socket: Socket };
+    ? Parameters<ServerToClientEvents[Event]>
+    : Data
+  : Data;
 
-type Config = Partial<{
-  readonly once: boolean;
-}>;
+type UseSocketEventResult<
+  Event extends EventName,
+  Data extends UnknownArray,
+> = {
+  readonly socket: Socket;
+  readonly data: MapToUndefined<HandlerValues<Event, Data>>;
+};
 
 type UseSocketEvent = {
   <Data extends UnknownArray, Event extends EventName>(
     event: Event,
-    config?: Config,
+    config?: Config<Event, Data>,
   ): UseSocketEventResult<Event, Data>;
   <Data extends UnknownArray, Event extends EventNameString = EventNameString>(
     event: Event,
-    config?: Config,
+    config?: Config<Event, Data>,
   ): UseSocketEventResult<Event, Data>;
+};
+
+export type Config<Event extends EventName, Data extends UnknownArray> = {
+  readonly once?: boolean;
+  readonly handler?: (values: HandlerValues<Event, Data>) => void;
 };
 
 export const useSocketEvent: UseSocketEvent = <
@@ -44,7 +50,7 @@ export const useSocketEvent: UseSocketEvent = <
   Event extends EventName,
 >(
   event: Event,
-  { once }: Config = { once: false },
+  { once, handler }: Config<Event, Data> = { once: false },
 ) => {
   const { socket, isConnected } = useSocket();
   const [data, setData] = useState<MapToUndefined<Data>>(
@@ -65,6 +71,9 @@ export const useSocketEvent: UseSocketEvent = <
 
     socket[method](event as string, (...values: readonly unknown[]) => {
       setData(values as MapToUndefined<Data>);
+      if (handler) {
+        handler(values as HandlerValues<Event, Data>);
+      }
 
       if (once) {
         receivedOnce.current = true;

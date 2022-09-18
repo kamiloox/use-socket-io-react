@@ -9,6 +9,10 @@ export type MapToUndefined<Tuple> = {
   readonly [Key in keyof Tuple]: Tuple[Key] | undefined;
 };
 
+export type EventHandler<Event extends keyof ServerToClientEvents> = {
+  (values: Parameters<ServerToClientEvents[Event]>): void;
+};
+
 // Interfaces to augment down below ↓
 
 export interface ServerToClientEvents {}

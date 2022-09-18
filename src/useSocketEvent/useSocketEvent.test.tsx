@@ -3,13 +3,13 @@ import { renderHook } from '@testing-library/react-hooks';
 import { SocketProviderMock, server, postpone } from '../test-utils';
 import { UnknownArray } from '../types';
 
-import { useSocketEvent } from './useSocketEvent';
+import { useSocketEvent, Config } from './useSocketEvent';
 
-const renderUseSocketEvent = <T extends UnknownArray>(
+const renderUseSocketEvent = <Data extends UnknownArray>(
   eventName: string,
-  config?: Parameters<typeof useSocketEvent>[1],
+  config?: Config<string, Data>,
 ) => {
-  return renderHook(() => useSocketEvent<T>(eventName, config), {
+  return renderHook(() => useSocketEvent<Data>(eventName, config), {
     wrapper: SocketProviderMock,
   });
 };

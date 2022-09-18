@@ -145,7 +145,7 @@ In addition, `useSocket` returns a native socket from a `socket.io-client` if so
 
 Socket.io introduces [TypeScript support](https://socket.io/docs/v4/typescript/). This library supports this idea too. It's possible to abandon passing generic to every `useSocketEvent` and `useSocketEmit` hook thankfully to a module [augmentation feature](https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation).
 
-Create a file in your project called `types/use-socket-io-react.d.ts` and paste this.
+In the a root of a project (e.g. in the `src`) create a file called `types/use-socket-io-react.d.ts` and paste this.
 
 ```ts
 import 'use-socket-io-react';
@@ -179,6 +179,16 @@ const handleMessage: EventHandler<'chat'> = ([message]) => {
 useSocketEvent('chat', {
   handler: handleMessage,
 });
+```
+
+> Disclaimer. If this feature doesn't work try adding a path to a `typeRoots` in a `tsconfig.json`.
+
+```ts
+{
+  "compilerOptions": {
+    "typeRoots": ["./src/types"]
+  },
+}
 ```
 
 ### Additional notes

@@ -16,6 +16,6 @@ test('when client emits event to server, server receives emitted value', (done) 
       done();
     });
 
-    result.current.emit('fruit', 'orange', 'apple');
+    result.current.emit('fruit', ['orange', 'apple']);
   });
 });

@@ -11,7 +11,7 @@
 ## Key features
 
 - Module augmentation to reuse your types that are on a backend. More on that [here](#module-augmentation)
-- TypeScript support
+- TypeScript (TS) support
 - Reusable React.js hooks
 
 ## Installation
@@ -27,13 +27,20 @@
   ```sh
   npm install use-socket-io-react
   ```
+- With pnpm
+
+  ```sh
+  pnpm install use-socket-io-react
+  ```
 
 ## Setup
 
-Wrap the application with a `SocketProvider`. For example, with React 18 it can be done like so:
+Wrap the application with a `SocketProvider`. For example, with React 18:
 
 ```ts
-const SERVER_URI = 'http://localhost:4000';
+import { SocketProvider } from "use-socket-io-react";
+
+const SERVER_URI: string = 'http://localhost:4000';
 
 ReactDOM.render(
   <SocketProvider uri={SERVER_UR}>
@@ -110,8 +117,7 @@ emit<[string]>('message', ['Hey, this is my message']);
 You can provide a generic of how your emitted values need to look, but that's not recommended. Take a look at [module augmentation](#module-augmentation)
 
 ## Socket state
-
-Hook called `useSocket` stores values about a current socket state. It knows e.g. if a socket is either connected or there is some error.
+The `useSocket` hook stores values about a socket's current state. It knows e.g. if a socket is either connected or there is some error.
 
 ```ts
 const {
@@ -139,11 +145,11 @@ if (isConnecting) {
 }
 ```
 
-In addition, `useSocket` returns a native socket from a `socket.io-client` if some feature is needed that's currently beyond this library.
+In addition, `useSocket` returns a native socket from `socket.io-client` if some feature is needed that's currently beyond this library.
 
 <h2 id="module-augmentation">Module augmentation</h2>
 
-Socket.io introduces [TypeScript support](https://socket.io/docs/v4/typescript/). This library supports this idea too. It's possible to abandon passing generic to every `useSocketEvent` and `useSocketEmit` hook thankfully to a module [augmentation feature](https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation).
+Socket.io introduced [TypeScript support starting from v3](https://socket.io/docs/v4/typescript/). This library supports TS as well. This allows you to abandon passing a generic to every `useSocketEvent` and `useSocketEmit` hook thankfully, because the TS [augmentation feature](https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation) can be used.
 
 In the a root of a project (e.g. in the `src`) create a file called `types/use-socket-io-react.d.ts` and paste this.
 
